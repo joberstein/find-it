@@ -18,6 +18,7 @@ import com.findit.android.R;
 
 public class Login extends Activity {
 	public static final String PREFS_NAME = "MyPrefsFile";
+	public static final String USER_ID = "userId";
 	
 	FindItDbHelper db;
 	SharedPreferences preferences;
@@ -25,7 +26,7 @@ public class Login extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_login);
+		setContentView(R.layout.login);
 		db = FindItDbHelper.getInstance(this);
 		preferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		
@@ -39,7 +40,7 @@ public class Login extends Activity {
 	}
 	
 	private void loginReturningUser() {
-		if (isUserAlreadyLoggedIn(preferences.getLong("userId", -1))) {
+		if (isUserAlreadyLoggedIn(preferences.getLong(USER_ID, -1))) {
 			forwardToViewFurniture();
 		}
 	}
@@ -63,7 +64,7 @@ public class Login extends Activity {
 			String passwordValue = matchingUsers.getString(matchingUsers.getColumnIndex(UserTable.COLUMN_NAME_PASSWORD));
 			if (password.equals(passwordValue)) {
 				long idValue = matchingUsers.getLong(matchingUsers.getColumnIndex(UserTable._ID));
-				saveUserInformation(idValue, username, passwordValue);
+				rememberUserId(idValue);
 				forwardToViewFurniture();
 				return;
 			}
@@ -79,11 +80,9 @@ public class Login extends Activity {
 		startActivity(intent);
 	}
 	
-	private void saveUserInformation(long id, String username, String password) {
+	private void rememberUserId(long id) {
 		Editor editor = preferences.edit();
-		editor.putLong("userId", id);
-		editor.putString("username", username);
-		editor.putString("password", password);
+		editor.putLong(USER_ID, id);
 		editor.commit();
 	}
 

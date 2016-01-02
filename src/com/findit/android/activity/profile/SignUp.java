@@ -18,14 +18,14 @@ import com.findit.android.data.User;
 import com.findit.android.R;
 
 public class SignUp extends Activity {
-	FindItDbHelper dbInstance;
+	FindItDbHelper db;
 	SharedPreferences preferences;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_sign_up);
-		dbInstance = FindItDbHelper.getInstance(this);
+		setContentView(R.layout.sign_up);
+		db = FindItDbHelper.getInstance(this);
 		preferences = getSharedPreferences(Login.PREFS_NAME, Context.MODE_PRIVATE);
 	}
 	
@@ -52,10 +52,10 @@ public class SignUp extends Activity {
 		}
 		else {
 			User newUser = new User(email, username, password);
-			long newUserId = dbInstance.saveUser(newUser);
+			long newUserId = db.saveUser(newUser);
 			newUser.setId(newUserId);
 			Editor editor = preferences.edit();
-			editor.putLong("userId", newUserId);
+			editor.putLong(Login.USER_ID, newUserId);
 			editor.commit();
 			finish();
 		}
@@ -63,7 +63,7 @@ public class SignUp extends Activity {
 	}
 	
 	public boolean isUsernameTaken(String username) {
-		Cursor usernames = dbInstance.getUsernames();
+		Cursor usernames = db.getUsernames();
 		if (usernames != null) {
 			usernames.moveToFirst();
 		}

@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Spinner;
 
 import com.findit.android.activity.profile.Login;
+import com.findit.android.dao.FindItContract.FurnitureTable;
 import com.findit.android.dao.FindItDbHelper;
 import com.findit.android.data.Furniture;
 import com.findit.android.R;
@@ -35,14 +36,15 @@ public class CreateFurniture extends Activity {
 		int height = Integer.parseInt(((Spinner) findViewById(R.id.inputFurnitureHeight)).getSelectedItem().toString());
 		
 		Furniture newFurniture = new Furniture(name, width, height);
-		newFurniture.setCreatorId(preferences.getLong("userId", -1));
+		newFurniture.setCreatorId(preferences.getLong(Login.USER_ID, -1));
 		long id = db.saveFurniture(newFurniture);
 		newFurniture.setId(id);
+		
 		Intent data = new Intent();
-		data.putExtra("furnitureId", id);
-		data.putExtra("name", name);
-		data.putExtra("width", width);
-		data.putExtra("height", height);
+		data.putExtra(FurnitureTable._ID, id);
+		data.putExtra(FurnitureTable.COLUMN_NAME_NAME, name);
+		data.putExtra(FurnitureTable.COLUMN_NAME_WIDTH, width);
+		data.putExtra(FurnitureTable.COLUMN_NAME_HEIGHT, height);
 		setResult(Activity.RESULT_OK, data);
 		finish();
 	}

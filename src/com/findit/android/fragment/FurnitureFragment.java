@@ -15,9 +15,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.findit.android.activity.ViewFurniture;
-import com.findit.android.data.Furniture;
 import com.findit.android.R;
+import com.findit.android.activity.ViewFurniture;
+import com.findit.android.dao.FindItContract.FurnitureTable;
+import com.findit.android.data.Furniture;
 
 public class FurnitureFragment extends Fragment {
 
@@ -39,12 +40,13 @@ public class FurnitureFragment extends Fragment {
 			TextView furnitureNameView = (TextView) view.findViewById(R.id.furnitureName);
 			TableLayout furnitureTable = (TableLayout) view.findViewById(R.id.furnitureTable);
 			
-			String name = args.getString("name", "");
-			int width = args.getInt("width", 1);
-			int height = args.getInt("height", 1);
+			long id = args.getLong(FurnitureTable._ID);
+			String name = args.getString(FurnitureTable.COLUMN_NAME_NAME, "");
+			int width = args.getInt(FurnitureTable.COLUMN_NAME_WIDTH, 1);
+			int height = args.getInt(FurnitureTable.COLUMN_NAME_HEIGHT, 1);
 			
 			furnitureNameView.setText(name);
-			createFurnitureTable(furnitureTable, width, height);
+			createFurnitureTable(furnitureTable, id, width, height);
 		}
 		return view;
 	}
@@ -54,17 +56,17 @@ public class FurnitureFragment extends Fragment {
 		Furniture furniture = ViewFurniture.getFurniture(furnitureId);
 		
 		Bundle args = new Bundle();
-		args.putLong("furnitureId", furnitureId);
-		args.putString("name", furniture.getName());
-		args.putInt("width", furniture.getWidth());
-		args.putInt("height", furniture.getHeight());
-		
+		args.putLong(FurnitureTable._ID, furnitureId);
+		args.putString(FurnitureTable.COLUMN_NAME_NAME, furniture.getName());
+		args.putInt(FurnitureTable.COLUMN_NAME_WIDTH, furniture.getWidth());
+		args.putInt(FurnitureTable.COLUMN_NAME_HEIGHT, furniture.getHeight());
 		fragment.setArguments(args);
+		
 		return fragment;
 	}
 	
 	@SuppressLint("NewApi")
-	private void createFurnitureTable(TableLayout furnitureTable, int width, int height) {
+	private void createFurnitureTable(TableLayout furnitureTable, long id, int width, int height) {
 		GradientDrawable blackBorder = new GradientDrawable();
         blackBorder.setStroke(1, Color.BLACK);
         

@@ -31,12 +31,15 @@ import com.findit.android.R;
 public class ViewFurniture extends AppCompatActivity {
 	public static int FURNITURE_COUNT;
 	public static Cursor FURNITURE_FOR_USER;
-	static final int CREATE_FURNITURE_REQUEST = 1;
-	private static int currentPage;
+	
 	public static String CURRENT_NAME;
 	public static int CURRENT_WIDTH;
 	public static int CURRENT_HEIGHT;
-
+	
+	public static final int CREATE_FURNITURE_REQUEST = 1;
+	
+	private static final String CURRENT_PAGE = "currentPage";
+	private static int currentPage;
 	private static FindItDbHelper db;
 	private static SharedPreferences preferences;
 	/**
@@ -74,7 +77,7 @@ public class ViewFurniture extends AppCompatActivity {
 		}
 
 		if (savedInstanceState != null) {
-			int savedCurrentPage = savedInstanceState.getInt("currentPage");
+			int savedCurrentPage = savedInstanceState.getInt(CURRENT_PAGE);
 			currentPage = savedCurrentPage;
 			mViewPager.setCurrentItem(savedCurrentPage);
 		}
@@ -107,7 +110,7 @@ public class ViewFurniture extends AppCompatActivity {
 		}
 		else if (id == R.id.logout) {
 			Editor editor = preferences.edit();
-			editor.putLong("userId", -1);
+			editor.putLong(Login.USER_ID, -1);
 			editor.commit();
 			Intent intent = new Intent(this, Login.class);
 			startActivity(intent);
@@ -155,14 +158,14 @@ public class ViewFurniture extends AppCompatActivity {
 	@Override
 	public void onSaveInstanceState(Bundle instance) {
 		super.onSaveInstanceState(instance);
-		instance.putInt("currentPage", currentPage);
+		instance.putInt(CURRENT_PAGE, currentPage);
 	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == CREATE_FURNITURE_REQUEST) {
 			if (resultCode == RESULT_OK) {
-				addNewFurniture(data.getLongExtra("furnitureId", -1));
+				addNewFurniture(data.getLongExtra(FurnitureTable._ID, -1));
 			}
 		}
 	}
@@ -235,7 +238,7 @@ public class ViewFurniture extends AppCompatActivity {
 	}
 
 	private static void refreshFurnitureCount() {
-		long userId = preferences.getLong("userId", -1);
+		long userId = preferences.getLong(Login.USER_ID, -1);
 		FURNITURE_FOR_USER = db.getFurnitureByCreator(userId);
 		FURNITURE_COUNT = FURNITURE_FOR_USER.getCount();
 	}

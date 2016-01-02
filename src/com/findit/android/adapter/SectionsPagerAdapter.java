@@ -9,9 +9,9 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
-import android.view.ViewGroup;
 
 import com.findit.android.activity.ViewFurniture;
+import com.findit.android.dao.FindItContract.FurnitureTable;
 import com.findit.android.fragment.EmptyFurnitureFragment;
 import com.findit.android.fragment.FurnitureFragment;
 
@@ -74,16 +74,10 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getItemPosition(Object o) {
-		//		Fragment fragment = (Fragment) o;
-		//		if (!mTags.isEmpty() && mTags.contains(fragment.getTag())) {
-		//			return POSITION_UNCHANGED;
-		//		}
-		//		return POSITION_NONE;
-		
 		Fragment fragment = (Fragment) o;
 		Bundle args = fragment.getArguments();
 		if (args != null) {
-			String fragTag = Long.toString(args.getLong("furnitureId"));
+			String fragTag = Long.toString(args.getLong(FurnitureTable._ID));
 			if (mTags.contains(fragTag)) {
 				for (int i = 0; i < mFragments.size(); i++) {
 					if (mFragments.get(i).getTag().equals(fragTag)) {
