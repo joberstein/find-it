@@ -1,4 +1,4 @@
-package com.jro.findit;
+package com.jro.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,8 +18,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.jro.activity.profile.Login;
+import com.jro.adapter.SectionsPagerAdapter;
+import com.jro.dao.AndroidDatabaseManager;
 import com.jro.dao.FindItDbHelper;
 import com.jro.data.Furniture;
+import com.jro.findit.R;
+import com.jro.fragment.EmptyFurnitureFragment;
+import com.jro.fragment.FurnitureFragment;
 
 public class ViewFurniture extends AppCompatActivity {
 	public static int FURNITURE_COUNT;
@@ -52,7 +58,7 @@ public class ViewFurniture extends AppCompatActivity {
 		setTitle("Your Furniture");
 		setContentView(R.layout.view_furniture);
 		db = FindItDbHelper.getInstance(this);
-		preferences = getSharedPreferences(LoginActivity.PREFS_NAME, Context.MODE_PRIVATE);
+		preferences = getSharedPreferences(Login.PREFS_NAME, Context.MODE_PRIVATE);
 
 		// Create the adapter that will return a fragment for each of the sections of the activity.
 		mSectionsPagerAdapter = SectionsPagerAdapter.getInstance(getFragmentManager());
@@ -102,7 +108,7 @@ public class ViewFurniture extends AppCompatActivity {
 			Editor editor = preferences.edit();
 			editor.putLong("userId", -1);
 			editor.commit();
-			Intent intent = new Intent(this, LoginActivity.class);
+			Intent intent = new Intent(this, Login.class);
 			startActivity(intent);
 		}
 		else if (id == R.id.database) {

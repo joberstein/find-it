@@ -1,4 +1,4 @@
-package com.jro.findit;
+package com.jro.adapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -11,8 +11,11 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 
+import com.jro.activity.ViewFurniture;
 import com.jro.dao.FindItContract.FurnitureTable;
 import com.jro.data.Furniture;
+import com.jro.fragment.EmptyFurnitureFragment;
+import com.jro.fragment.FurnitureFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

@@ -1,4 +1,4 @@
-package com.jro.findit;
+package com.jro.activity.profile;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,8 +13,11 @@ import android.widget.Toast;
 import com.jro.dao.FindItContract.UserTable;
 import com.jro.dao.FindItDbHelper;
 import com.jro.data.User;
+import com.jro.findit.R;
+import com.jro.findit.R.id;
+import com.jro.findit.R.layout;
 
-public class SignUpActivity extends Activity {
+public class SignUp extends Activity {
 	FindItDbHelper dbInstance;
 	SharedPreferences preferences;
 	
@@ -23,7 +26,7 @@ public class SignUpActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
 		dbInstance = FindItDbHelper.getInstance(this);
-		preferences = getSharedPreferences(LoginActivity.PREFS_NAME, Context.MODE_PRIVATE);
+		preferences = getSharedPreferences(Login.PREFS_NAME, Context.MODE_PRIVATE);
 	}
 	
 	public void saveCredentials(View view) {

@@ -1,4 +1,4 @@
-package com.jro.findit;
+package com.jro.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -15,7 +15,11 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.jro.activity.ViewFurniture;
 import com.jro.data.Furniture;
+import com.jro.findit.R;
+import com.jro.findit.R.id;
+import com.jro.findit.R.layout;
 
 public class FurnitureFragment extends Fragment {
 
@@ -25,12 +29,10 @@ public class FurnitureFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
 		super.onCreateView(inflater, container, savedInstanceState);
 		setHasOptionsMenu(true);
 		
 		Bundle args = getArguments();
-		
 		if (ViewFurniture.FURNITURE_COUNT == 0) {
 			return inflater.inflate(R.layout.fragment_empty_furniture, container, false);
 		}
@@ -41,7 +43,7 @@ public class FurnitureFragment extends Fragment {
 			TextView furnitureNameView = (TextView) view.findViewById(R.id.furnitureName);
 			TableLayout furnitureTable = (TableLayout) view.findViewById(R.id.furnitureTable);
 			
-			int position = args.getInt("position", 0);
+			int position = args.getInt("position", 0) + 1;
 			String name = args.getString("name", "");
 			int width = args.getInt("width", 1);
 			int height = args.getInt("height", 1);

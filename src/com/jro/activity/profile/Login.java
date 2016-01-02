@@ -1,4 +1,4 @@
-package com.jro.findit;
+package com.jro.activity.profile;
 
 import android.app.Activity;
 import android.content.Context;
@@ -13,10 +13,14 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.jro.activity.ViewFurniture;
 import com.jro.dao.FindItContract.UserTable;
 import com.jro.dao.FindItDbHelper;
+import com.jro.findit.R;
+import com.jro.findit.R.id;
+import com.jro.findit.R.layout;
 
-public class LoginActivity extends Activity {
+public class Login extends Activity {
 	public static final String PREFS_NAME = "MyPrefsFile";
 	
 	FindItDbHelper db;
@@ -75,7 +79,7 @@ public class LoginActivity extends Activity {
 	}
 
 	public void forwardToSignUp(View view) {
-		Intent intent = new Intent(this, SignUpActivity.class);
+		Intent intent = new Intent(this, SignUp.class);
 		startActivity(intent);
 	}
 	

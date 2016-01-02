@@ -1,4 +1,7 @@
-package com.jro.findit;
+package com.jro.fragment;
+
+import com.jro.findit.R;
+import com.jro.findit.R.layout;
 
 import android.app.Fragment;
 import android.os.Bundle;
@@ -11,7 +14,6 @@ public class EmptyFurnitureFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
 		super.onCreateView(inflater, container, savedInstanceState);
 		return inflater.inflate(R.layout.fragment_empty_furniture, container, false);
 	}

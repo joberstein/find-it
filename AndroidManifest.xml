@@ -18,11 +18,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".CreateFurniture"
+            android:name="com.jro.activity.CreateFurniture"
             android:label="@string/title_activity_create_furniture" >
         </activity>
         <activity
-            android:name=".LoginActivity"
+   			android:name="com.jro.activity.profile.Login"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,13 +31,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignUpActivity"
+            android:name="com.jro.activity.profile.SignUp"
             android:label="@string/title_activity_sign_up" />
         <activity
-            android:name=".AndroidDatabaseManager"
+            android:name="com.jro.dao.AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
-            android:name=".ViewFurniture"
+   			android:name="com.jro.activity.ViewFurniture"
             android:label="@string/title_activity_main"
             android:screenOrientation="sensorPortrait" />
     </application>

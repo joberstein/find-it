@@ -21,18 +21,18 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 	// If you change the database schema, you must increment the database version. 
 	public static final int DATABASE_VERSION = 1;
 	public static final String DATABASE_NAME = "FindIt.db";
-	private static FindItDbHelper dbInstance;
+	private static FindItDbHelper db;
 
 	// change to private for prod
-	public FindItDbHelper(Context context) {
+	private FindItDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
 	public static synchronized FindItDbHelper getInstance(Context context) {
-		if (dbInstance == null) {
-			dbInstance = new FindItDbHelper(context.getApplicationContext()); 
+		if (db == null) {
+			db = new FindItDbHelper(context.getApplicationContext()); 
 		}
-		return dbInstance;
+		return db;
 	}
 
 	public void onCreate(SQLiteDatabase db) {

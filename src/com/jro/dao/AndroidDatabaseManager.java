@@ -1,5 +1,5 @@
-package com.jro.findit;
-//add your package name here example: package com.example.dbm;
+package com.jro.dao;
+
 
 //all required import files
 import java.util.ArrayList;
@@ -33,8 +33,6 @@ import android.widget.TableRow;
 import android.widget.TableRow.LayoutParams;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.jro.dao.FindItDbHelper;
 
 public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
 
@@ -78,7 +76,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 		
 
 		//in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name
-		dbm = new FindItDbHelper(AndroidDatabaseManager.this);
+		dbm = FindItDbHelper.getInstance(AndroidDatabaseManager.this);
 		
 		validTableNames = new HashSet<String>();
 		validTableNames.add("user"); 
