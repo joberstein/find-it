@@ -1,13 +1,12 @@
-package com.jro.fragment;
-
-import com.jro.findit.R;
-import com.jro.findit.R.layout;
+package com.findit.android.fragment;
 
 import android.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.findit.android.R;
 
 public class EmptyFurnitureFragment extends Fragment {
 

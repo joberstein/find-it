@@ -1,4 +1,4 @@
-package com.jro.activity;
+package com.findit.android.activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +18,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.jro.activity.profile.Login;
-import com.jro.adapter.SectionsPagerAdapter;
-import com.jro.dao.AndroidDatabaseManager;
-import com.jro.dao.FindItDbHelper;
-import com.jro.data.Furniture;
-import com.jro.findit.R;
-import com.jro.fragment.EmptyFurnitureFragment;
-import com.jro.fragment.FurnitureFragment;
+import com.findit.android.activity.profile.Login;
+import com.findit.android.adapter.SectionsPagerAdapter;
+import com.findit.android.dao.AndroidDatabaseManager;
+import com.findit.android.dao.FindItDbHelper;
+import com.findit.android.dao.FindItContract.FurnitureTable;
+import com.findit.android.data.Furniture;
+import com.findit.android.fragment.EmptyFurnitureFragment;
+import com.findit.android.fragment.FurnitureFragment;
+import com.findit.android.R;
 
 public class ViewFurniture extends AppCompatActivity {
 	public static int FURNITURE_COUNT;
@@ -69,7 +70,7 @@ public class ViewFurniture extends AppCompatActivity {
 		refreshFurnitureCount();
 
 		if (FURNITURE_COUNT > 0) {
-			reAddFurniture(mSectionsPagerAdapter.getFurnitureForUser());
+			reAddFurniture(getFurnitureForUser());
 		}
 
 		if (savedInstanceState != null) {
@@ -121,7 +122,9 @@ public class ViewFurniture extends AppCompatActivity {
 	@Override
 	public void onResume() {
 		super.onResume();
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mSectionsPagerAdapter = SectionsPagerAdapter.getInstance(getFragmentManager());
+		mSectionsPagerAdapter.notifyDataSetChanged();
+ 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		mViewPager.setCurrentItem(currentPage);
 		refreshFurnitureCount();
 	}
@@ -242,18 +245,43 @@ public class ViewFurniture extends AppCompatActivity {
 		startActivityForResult(intent, CREATE_FURNITURE_REQUEST);
 	}
 
+	public List<Furniture> getFurnitureForUser() {
+		return cursorToList(FURNITURE_FOR_USER);
+	}
+	
+	private List<Furniture> cursorToList(Cursor c) {
+		List<Furniture> data = new ArrayList<Furniture>();
+		if (c != null) {
+			c.moveToFirst();
+		}
+		while (!c.isAfterLast()) {
+			data.add(createFurnitureFromCursor(c));
+			c.moveToNext();
+		}
+
+		return data;
+	}
+
 	public static Furniture getFurniture(long id) {
 		refreshFurnitureCount();
 		Cursor cursor = db.getFurnitureById(id);
 		if (cursor != null) {
 			cursor.moveToFirst();
 		}
-		if (!cursor.isAfterLast()) {
-			return mSectionsPagerAdapter.createFurnitureFromCursor(cursor);
-		}
-		else {
-			System.out.println("Something went wrong because the db couldn't find furniture with id: " + id + "!");
-			return null;
-		}
+		return createFurnitureFromCursor(cursor);
+	}
+	
+	private static Furniture createFurnitureFromCursor(Cursor c) {
+		long id = c.getLong(c.getColumnIndex(FurnitureTable._ID));
+		String name = c.getString(c.getColumnIndex(FurnitureTable.COLUMN_NAME_NAME));
+		int width = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_WIDTH));
+		int height = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_HEIGHT));
+		long creatorId = c.getLong(c.getColumnIndex(FurnitureTable.COLUMN_NAME_CREATOR_ID));
+
+		Furniture furniture = new Furniture(name, width, height);
+		furniture.setId(id);
+		furniture.setCreatorId(creatorId);
+		
+		return furniture;
 	}
 }

@@ -1,4 +1,4 @@
-package com.jro.fragment;
+package com.findit.android.fragment;
 
 import android.annotation.SuppressLint;
 import android.app.Fragment;
@@ -15,17 +15,14 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.jro.activity.ViewFurniture;
-import com.jro.data.Furniture;
-import com.jro.findit.R;
-import com.jro.findit.R.id;
-import com.jro.findit.R.layout;
+import com.findit.android.activity.ViewFurniture;
+import com.findit.android.data.Furniture;
+import com.findit.android.R;
 
 public class FurnitureFragment extends Fragment {
 
 	private View view;
 	
-	@SuppressLint("NewApi")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -39,34 +36,15 @@ public class FurnitureFragment extends Fragment {
 		
 		if (args != null) {
 			view = inflater.inflate(R.layout.fragment_furniture, container, false);
-			
 			TextView furnitureNameView = (TextView) view.findViewById(R.id.furnitureName);
 			TableLayout furnitureTable = (TableLayout) view.findViewById(R.id.furnitureTable);
 			
-			int position = args.getInt("position", 0) + 1;
 			String name = args.getString("name", "");
 			int width = args.getInt("width", 1);
 			int height = args.getInt("height", 1);
 			
-			furnitureNameView.setText(Integer.toString(position) + ": " + name);
-
-			GradientDrawable blackBorder = new GradientDrawable();
-	        blackBorder.setStroke(1, Color.BLACK);
-	        
-			for (int i = 0; i < height; i++) {
-				TableRow tableRow = new TableRow(getActivity());
-				tableRow.setLayoutParams(new LayoutParams(TableRow.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-				
-				for (int j = 0; j < width; j++) {
-					Button button = new Button(getActivity());
-			        button.setBackground(blackBorder);
-					button.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f));
-					button.setGravity(Gravity.CENTER);
-					button.setText("+");
-					tableRow.addView(button);
-				}
-				furnitureTable.addView(tableRow);
-			}
+			furnitureNameView.setText(name);
+			createFurnitureTable(furnitureTable, width, height);
 		}
 		return view;
 	}
@@ -74,13 +52,35 @@ public class FurnitureFragment extends Fragment {
 	public static FurnitureFragment newInstance(int position, long furnitureId) {
 		FurnitureFragment fragment = new FurnitureFragment();
 		Furniture furniture = ViewFurniture.getFurniture(furnitureId);
+		
 		Bundle args = new Bundle();
-		args.putInt("position", position);
 		args.putLong("furnitureId", furnitureId);
 		args.putString("name", furniture.getName());
 		args.putInt("width", furniture.getWidth());
 		args.putInt("height", furniture.getHeight());
+		
 		fragment.setArguments(args);
 		return fragment;
+	}
+	
+	@SuppressLint("NewApi")
+	private void createFurnitureTable(TableLayout furnitureTable, int width, int height) {
+		GradientDrawable blackBorder = new GradientDrawable();
+        blackBorder.setStroke(1, Color.BLACK);
+        
+		for (int i = 0; i < height; i++) {
+			TableRow tableRow = new TableRow(getActivity());
+			tableRow.setLayoutParams(new LayoutParams(TableRow.LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+			
+			for (int j = 0; j < width; j++) {
+				Button button = new Button(getActivity());
+		        button.setBackground(blackBorder);
+				button.setLayoutParams(new TableRow.LayoutParams(0, LayoutParams.WRAP_CONTENT, 1.0f));
+				button.setGravity(Gravity.CENTER);
+				button.setText("+");
+				tableRow.addView(button);
+			}
+			furnitureTable.addView(tableRow);
+		}
 	}
 }

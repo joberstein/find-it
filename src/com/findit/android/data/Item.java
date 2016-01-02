@@ -1,4 +1,4 @@
-package com.jro.data;
+package com.findit.android.data;
 
 public class Item {
 	private long id;

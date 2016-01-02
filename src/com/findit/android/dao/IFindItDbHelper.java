@@ -1,9 +1,9 @@
-package com.jro.dao;
+package com.findit.android.dao;
 
 import android.database.Cursor;
 
-import com.jro.data.Furniture;
-import com.jro.data.User;
+import com.findit.android.data.Furniture;
+import com.findit.android.data.User;
 
 public interface IFindItDbHelper {
 

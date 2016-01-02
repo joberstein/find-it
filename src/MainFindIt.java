@@ -1,7 +1,7 @@
-import com.jro.data.Category;
-import com.jro.data.Drawer;
-import com.jro.data.Furniture;
-import com.jro.data.Item;
+import com.findit.android.data.Category;
+import com.findit.android.data.Drawer;
+import com.findit.android.data.Furniture;
+import com.findit.android.data.Item;
 
 
 

@@ -1,4 +1,4 @@
-package com.jro.activity;
+package com.findit.android.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -6,18 +6,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-import com.jro.activity.profile.Login;
-import com.jro.dao.FindItDbHelper;
-import com.jro.data.Furniture;
-import com.jro.findit.R;
-import com.jro.findit.R.id;
-import com.jro.findit.R.layout;
+import com.findit.android.activity.profile.Login;
+import com.findit.android.dao.FindItDbHelper;
+import com.findit.android.data.Furniture;
+import com.findit.android.R;
 
 public class CreateFurniture extends Activity {
 	FindItDbHelper db;

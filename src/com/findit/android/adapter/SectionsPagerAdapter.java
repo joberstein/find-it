@@ -1,4 +1,4 @@
-package com.jro.adapter;
+package com.findit.android.adapter;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,15 +7,13 @@ import java.util.Set;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
+import android.view.ViewGroup;
 
-import com.jro.activity.ViewFurniture;
-import com.jro.dao.FindItContract.FurnitureTable;
-import com.jro.data.Furniture;
-import com.jro.fragment.EmptyFurnitureFragment;
-import com.jro.fragment.FurnitureFragment;
+import com.findit.android.activity.ViewFurniture;
+import com.findit.android.fragment.EmptyFurnitureFragment;
+import com.findit.android.fragment.FurnitureFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -55,6 +53,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		return mTags;
 	}
 
+	// Took out item at 0, added a new item, and received old view before removal.
 	@Override
 	public Fragment getItem(int position) {
 		if (ViewFurniture.FURNITURE_COUNT == 0) {
@@ -62,26 +61,24 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		}
 		else {
 			Fragment frag = mFragments.get(position);
+			long furnitureId = -1;
 			if (frag != null) {
 				String fragTag = frag.getTag();
 				if (fragTag != null) {
-					long furnitureId = Long.parseLong(fragTag);
-					return FurnitureFragment.newInstance(position, furnitureId);
+					furnitureId = Long.parseLong(fragTag);
 				}
 			}
-			System.out.println("Something is wrong for fragment: " + frag.toString());
-			return null;
-//			return FurnitureFragment.newInstance(position, -1);
+			return FurnitureFragment.newInstance(position, furnitureId);
 		}
 	}
 
 	@Override
 	public int getItemPosition(Object o) {
-//		Fragment fragment = (Fragment) o;
-//		if (!mTags.isEmpty() && mTags.contains(fragment.getTag())) {
-//			return POSITION_UNCHANGED;
-//		}
-//		return POSITION_NONE;
+		//		Fragment fragment = (Fragment) o;
+		//		if (!mTags.isEmpty() && mTags.contains(fragment.getTag())) {
+		//			return POSITION_UNCHANGED;
+		//		}
+		//		return POSITION_NONE;
 		
 		Fragment fragment = (Fragment) o;
 		Bundle args = fragment.getArguments();
@@ -89,14 +86,23 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 			String fragTag = Long.toString(args.getLong("furnitureId"));
 			if (mTags.contains(fragTag)) {
 				for (int i = 0; i < mFragments.size(); i++) {
-					Fragment listFragment = mFragments.get(i);
-					if (listFragment.getTag().equals(fragTag)) {
+					if (mFragments.get(i).getTag().equals(fragTag)) {
 						return i;
 					}
 				}
+				return POSITION_UNCHANGED;
 			}
 		}
 		return POSITION_NONE;
+	}
+	
+	@Override
+	public long getItemId (int position) {
+		Fragment frag = mFragments.get(position);
+		if (frag instanceof FurnitureFragment) {
+			return Long.parseLong(frag.getTag());
+		}
+		return -1;
 	}
 
 	@Override
@@ -109,14 +115,14 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 			mFragments = new ArrayList<Fragment>();
 		}
 		mFragments.add(fragment);
- 		mTags.add(fragment.getTag());
+		mTags.add(fragment.getTag());
 	}
-	
+
 	public void reAddFragment(Fragment fragment) {
 		mFragments.add(fragment);
 		mTags.add(fragment.getTag());
 	}
-	
+
 	public void clearFragments() {
 		mFragments.clear();
 		mTags.clear();
@@ -130,7 +136,6 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 			mTags.add(frag.getTag());
 		}
 	}
-
 
 	public void removeFragment(int position) {
 		if (mFragments.size() == 1) {
@@ -147,35 +152,5 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
 	public Fragment getFragmentAtPosition(int position) {
 		return mFragments.get(position);
-	}
-
-	public List<Furniture> getFurnitureForUser() {
-		return cursorToList(ViewFurniture.FURNITURE_FOR_USER);
-	}
-
-	private List<Furniture> cursorToList(Cursor c) {
-		List<Furniture> data = new ArrayList<Furniture>();
-		if (c != null) {
-			c.moveToFirst();
-		}
-		while (!c.isAfterLast()) {
-			data.add(createFurnitureFromCursor(c));
-			c.moveToNext();
-		}
-
-		return data;
-	}
-	
-	public Furniture createFurnitureFromCursor(Cursor c) {
-		long id = c.getLong(c.getColumnIndex(FurnitureTable._ID));
-		String name = c.getString(c.getColumnIndex(FurnitureTable.COLUMN_NAME_NAME));
-		int width = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_WIDTH));
-		int height = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_HEIGHT));
-		long creatorId = c.getLong(c.getColumnIndex(FurnitureTable.COLUMN_NAME_CREATOR_ID));
-
-		Furniture furniture = new Furniture(name, width, height);
-		furniture.setId(id);
-		furniture.setCreatorId(creatorId);
-		return furniture;
 	}
 }

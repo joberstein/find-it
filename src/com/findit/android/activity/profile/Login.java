@@ -1,4 +1,4 @@
-package com.jro.activity.profile;
+package com.findit.android.activity.profile;
 
 import android.app.Activity;
 import android.content.Context;
@@ -7,18 +7,14 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.jro.activity.ViewFurniture;
-import com.jro.dao.FindItContract.UserTable;
-import com.jro.dao.FindItDbHelper;
-import com.jro.findit.R;
-import com.jro.findit.R.id;
-import com.jro.findit.R.layout;
+import com.findit.android.activity.ViewFurniture;
+import com.findit.android.dao.FindItDbHelper;
+import com.findit.android.dao.FindItContract.UserTable;
+import com.findit.android.R;
 
 public class Login extends Activity {
 	public static final String PREFS_NAME = "MyPrefsFile";

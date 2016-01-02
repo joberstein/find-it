@@ -1,4 +1,4 @@
-package com.jro.dao;
+package com.findit.android.dao;
 
 import java.util.ArrayList;
 
@@ -11,11 +11,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.jro.dao.FindItContract.FurnitureTable;
-import com.jro.dao.FindItContract.ItemTypeTable;
-import com.jro.dao.FindItContract.UserTable;
-import com.jro.data.Furniture;
-import com.jro.data.User;
+import com.findit.android.dao.FindItContract.FurnitureTable;
+import com.findit.android.dao.FindItContract.ItemTypeTable;
+import com.findit.android.dao.FindItContract.UserTable;
+import com.findit.android.data.Furniture;
+import com.findit.android.data.User;
 
 public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper {
 	// If you change the database schema, you must increment the database version. 

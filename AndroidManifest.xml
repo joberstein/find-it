@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jro.findit"
+    package="com.findit.android"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -18,11 +18,11 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.jro.activity.CreateFurniture"
+            android:name="com.findit.android.activity.CreateFurniture"
             android:label="@string/title_activity_create_furniture" >
         </activity>
         <activity
-   			android:name="com.jro.activity.profile.Login"
+   			android:name="com.findit.android.activity.profile.Login"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,13 +31,13 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.jro.activity.profile.SignUp"
+            android:name="com.findit.android.activity.profile.SignUp"
             android:label="@string/title_activity_sign_up" />
         <activity
-            android:name="com.jro.dao.AndroidDatabaseManager"
+            android:name="com.findit.android.dao.AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
-   			android:name="com.jro.activity.ViewFurniture"
+   			android:name="com.findit.android.activity.ViewFurniture"
             android:label="@string/title_activity_main"
             android:screenOrientation="sensorPortrait" />
     </application>

@@ -1,4 +1,4 @@
-package com.jro.dao;
+package com.findit.android.dao;
 
 enum ItemType {
 	Drawer,

@@ -1,4 +1,4 @@
-package com.jro.data;
+package com.findit.android.data;
 
 import java.util.ArrayList;
 import java.util.List;
