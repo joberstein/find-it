@@ -1,6 +1,14 @@
-<android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.findit.android.activity.ViewFurniture" />
+    android:orientation="vertical"
+    tools:context="com.findit.android.activity.ViewDrawer" >
+
+    <ExpandableListView
+        android:id="@+id/expandableList"
+    	android:groupIndicator="@android:color/transparent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

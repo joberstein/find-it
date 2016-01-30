@@ -1,39 +1,61 @@
 package com.findit.android.data;
 
-public class Item {
+import java.util.Locale;
+
+public abstract class Item {
 	private long id;
 	private String name;
+	private ItemType type;
 	private long parentId; 
 	private long creatorId;
 	
-	public Item(String name) {
+	Item(String name, ItemType type, long parentId, long creatorId) {
 		this.name = name;
+		this.type = type;
+		this.parentId = parentId;
+		this.creatorId = creatorId;
 	}
 	
 	public long getId() {
 		return this.id;
 	}
 	
-	// used for testing
-	public void setId(int id) {
-		this.id = id;
-	}
-	
 	public String getName() {
 		return this.name;
 	}
 	
-	public void setName(String name) {
-		this.name = name;
+	public ItemType getType() {
+		return this.type;
 	}
 	
 	public long getParentId() {
 		return this.parentId;
 	}
 	
+	public long getCreatorId() {
+		return this.creatorId;
+	}
+	
+	// used for testing
+	public void setId(long id) {
+		this.id = id;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	public void setType(ItemType type) {
+		this.type = type;
+	}
+	
 	// used for testing
 	public void setParentId(long parentId) {
 		this.parentId = parentId;
+	}
+	
+	public void setCreatorId(long creatorId) {
+		this.creatorId = creatorId;
 	}
 	
 	@Override
@@ -46,12 +68,12 @@ public class Item {
 		}
 		Item temp = (Item) o;
 		return this.id == temp.id && 
-				this.name.toLowerCase().equals(temp.name.toLowerCase()) && 
+				this.name.toLowerCase(Locale.US).equals(temp.name.toLowerCase(Locale.US)) && 
 				this.parentId == temp.parentId;
 	}
 	
 	@Override
 	public int hashCode() {
-		return new Long(this.id).intValue();
+		return Long.valueOf(this.id).intValue();
 	}
 }

@@ -7,14 +7,14 @@ public final class FindItContract {
     public static final String[] CREATE_TABLES = {
         UserTable.CREATE_TABLE,
         FurnitureTable.CREATE_TABLE,
-        ItemTypeTable.CREATE_TABLE,
+        DrawerTable.CREATE_TABLE,
         ItemTable.CREATE_TABLE
     };
     
     public static final String[] DELETE_TABLES = {
         UserTable.DELETE_TABLE,
         FurnitureTable.DELETE_TABLE,
-        ItemTypeTable.DELETE_TABLE,
+        DrawerTable.DELETE_TABLE,
         ItemTable.DELETE_TABLE
     };
 
@@ -69,6 +69,36 @@ public final class FindItContract {
 
 		private static final String DELETE_TABLE =
 		    "DROP TABLE IF EXISTS " + FurnitureTable.TABLE_NAME;
+		
+		public static String createTable() {
+			return CREATE_TABLE;
+		}
+		
+		public static String deleteTable() {
+			return DELETE_TABLE;
+		}
+	}
+	
+	public static abstract class DrawerTable implements BaseColumns {
+		public static final String TABLE_NAME = "drawer";
+		public static final String COLUMN_NAME_NAME = "name";
+		public static final String COLUMN_NAME_LOC_INDEX = "loc_index";
+		public static final String COLUMN_NAME_PARENT_ID = "parent_id";
+		public static final String COLUMN_NAME_CREATOR_ID = "creator_id";
+		
+		private static final String CREATE_TABLE =
+		    "CREATE TABLE " + DrawerTable.TABLE_NAME + " (" +
+		    _ID + AUTO_INCREMENT + COMMA_SEP +
+		    DrawerTable.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+		    DrawerTable.COLUMN_NAME_LOC_INDEX + " INTEGER" + COMMA_SEP +
+		    DrawerTable.COLUMN_NAME_PARENT_ID + " INTEGER" + COMMA_SEP +
+		    DrawerTable.COLUMN_NAME_CREATOR_ID + " INTEGER NOT NULL" + COMMA_SEP +
+		    " FOREIGN KEY(" + DrawerTable.COLUMN_NAME_CREATOR_ID + ") REFERENCES " + UserTable.TABLE_NAME + "(" + UserTable._ID + ")" + COMMA_SEP +
+		    " FOREIGN KEY(" + DrawerTable.COLUMN_NAME_PARENT_ID + ") REFERENCES " + FurnitureTable.TABLE_NAME + "(" + FurnitureTable._ID + ")" +
+		    " )";
+
+		private static final String DELETE_TABLE =
+		    "DROP TABLE IF EXISTS " + DrawerTable.TABLE_NAME;
 		
 		public static String createTable() {
 			return CREATE_TABLE;

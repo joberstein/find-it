@@ -22,6 +22,10 @@
             android:label="@string/title_activity_create_furniture" >
         </activity>
         <activity
+            android:name="com.findit.android.activity.SetFurnitureProperties"
+            android:label="@string/title_activity_set_furniture_properties" >
+        </activity>
+        <activity
    			android:name="com.findit.android.activity.profile.Login"
             android:label="@string/app_name" >
             <intent-filter>
@@ -38,8 +42,11 @@
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
    			android:name="com.findit.android.activity.ViewFurniture"
-            android:label="@string/title_activity_main"
+            android:label="@string/title_activity_view_furniture"
             android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name="com.findit.android.activity.ViewDrawer"
+            android:label="@string/title_activity_view_drawer" />
     </application>
 
 </manifest>

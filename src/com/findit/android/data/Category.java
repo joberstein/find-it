@@ -1,12 +1,49 @@
 package com.findit.android.data;
 
-public class Category extends Group {
+import java.util.ArrayList;
+import java.util.List;
+
+import com.findit.android.dao.FindItContract.ItemTable;
+
+import android.database.Cursor;
+
+public class Category extends DrawerItem {
+	List<SingleItem> items;
 	
-	public Category(String name) {
-		super(name);
+	Category(String name, long parentId, long creatorId) {
+		super(name, ItemType.CATEGORY, parentId, creatorId);
+		this.items = new ArrayList<>();
 	}
 	
-	public boolean isDrawer() {
-		return false;
+	public void addItem(SingleItem item) {
+		items.add(item);
+	}
+	
+	public void removeItem(SingleItem item) {
+		items.remove(item);
+	}
+	
+	public List<SingleItem> getItems() {
+		return this.items;
+	}
+	
+	public void setItems(List<SingleItem> items) {
+		this.items = items;
+	}
+	
+	public static Category createCategoryFromCursor(Cursor c) {
+		long id = c.getLong(c.getColumnIndex(ItemTable._ID));
+		String name = c.getString(c.getColumnIndex(ItemTable.COLUMN_NAME_NAME));
+		long parentId = c.getLong(c.getColumnIndex(ItemTable.COLUMN_NAME_PARENT_ID));
+		long creatorId = c.getLong(c.getColumnIndex(ItemTable.COLUMN_NAME_CREATOR_ID));
+
+		Category category = new Category(name, parentId, creatorId);
+		category.setId(id);
+		
+		return category;
+	}
+	
+	public DrawerItem createSingleItem(String name) {
+		return new SingleItem(name, this.getId(), this.getCreatorId());
 	}
 }

@@ -1,9 +1,11 @@
 package com.findit.android.dao;
 
-import android.database.Cursor;
-
+import com.findit.android.data.Drawer;
 import com.findit.android.data.Furniture;
+import com.findit.android.data.Item;
 import com.findit.android.data.User;
+
+import android.database.Cursor;
 
 public interface IFindItDbHelper {
 
@@ -14,8 +16,23 @@ public interface IFindItDbHelper {
 	void updateUser(User updatedUser);
 	void deleteUser(long id);
 
-	Cursor getFurnitureByCreator(long id);
+	Cursor getFurnitureById(long id);
+	Cursor getFurnitureByCreator(long creatorId);
 	long saveFurniture(Furniture furniture);
 	void updateFurniture(Furniture furniture);
 	void deleteFurniture(long id);
+	
+	Cursor getDrawerById(long id);
+	Cursor getDrawersByFurniture(long parentId);
+	Cursor getDrawersByCreator(long creatorId);
+	long saveDrawer(Drawer drawer);
+	void updateDrawer(Drawer drawer);
+	void deleteDrawer(long id);
+	
+	Cursor getItemById(long id);
+	Cursor getItemsByParent(long parentId);
+	Cursor getItemsByCreator(long creatorId);
+	long saveItem(Item item);
+	void updateItem(Item item);
+	void deleteItem(long id);
 }

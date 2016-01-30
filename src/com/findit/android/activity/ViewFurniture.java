@@ -3,6 +3,17 @@ package com.findit.android.activity;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.findit.android.R;
+import com.findit.android.activity.profile.Login;
+import com.findit.android.adapter.SectionsPagerAdapter;
+import com.findit.android.dao.AndroidDatabaseManager;
+import com.findit.android.dao.FindItContract.FurnitureTable;
+import com.findit.android.dao.FindItDbHelper;
+import com.findit.android.data.Drawer;
+import com.findit.android.data.Furniture;
+import com.findit.android.fragment.EmptyFurnitureFragment;
+import com.findit.android.fragment.FurnitureFragment;
+
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -17,16 +28,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import com.findit.android.activity.profile.Login;
-import com.findit.android.adapter.SectionsPagerAdapter;
-import com.findit.android.dao.AndroidDatabaseManager;
-import com.findit.android.dao.FindItDbHelper;
-import com.findit.android.dao.FindItContract.FurnitureTable;
-import com.findit.android.data.Furniture;
-import com.findit.android.fragment.EmptyFurnitureFragment;
-import com.findit.android.fragment.FurnitureFragment;
-import com.findit.android.R;
 
 public class ViewFurniture extends AppCompatActivity {
 	public static int FURNITURE_COUNT;
@@ -100,7 +101,7 @@ public class ViewFurniture extends AppCompatActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.add_furniture) {
-			forwardToAddFurniture(findViewById(R.layout.create_furniture));
+			forwardToAddFurniture(findViewById(R.layout.set_furniture_properties));
 		}
 		else if (id == R.id.remove_furniture) {
 			removeFurniture(mViewPager.getCurrentItem());
@@ -192,10 +193,11 @@ public class ViewFurniture extends AppCompatActivity {
 		}
 	}
 
-	// 3 frags remove middle one: either removes 3rd frag or doesn't update second frag 
 	private void removeFurniture(int fragmentPosition) {
 		Fragment fragment = mSectionsPagerAdapter.getFragmentAtPosition(fragmentPosition);
-		db.deleteFurniture(Long.parseLong(fragment.getTag()));
+		long furnitureId = Long.parseLong(fragment.getTag());
+		removeItemsByFurniture(furnitureId);
+		db.deleteFurniture(furnitureId);
 		refreshFurnitureCount();
 		FragmentManager fm = getFragmentManager();
 
@@ -211,6 +213,16 @@ public class ViewFurniture extends AppCompatActivity {
 			int newPosition = (fragmentPosition == FURNITURE_COUNT) ? fragmentPosition - 1: fragmentPosition;
 			currentPage = newPosition;
 			mViewPager.setCurrentItem(currentPage);
+		}
+	}
+	
+	private void removeItemsByFurniture(long furnitureId) {
+		Furniture furniture = getFurniture(furnitureId);
+		List<Drawer> drawers = furniture.getDrawers();
+		for (int i = 0; i < drawers.size(); i++) {
+			Drawer drawer = drawers.get(i);
+			db.deleteItem(drawer.getId());
+			furniture.removeDrawer(drawer); // TODO is this necessary?
 		}
 	}
 
@@ -244,47 +256,51 @@ public class ViewFurniture extends AppCompatActivity {
 	}
 
 	public void forwardToAddFurniture(View view) {
-		Intent intent = new Intent(this, CreateFurniture.class);
+		Intent intent = new Intent(this, SetFurnitureProperties.class);
 		startActivityForResult(intent, CREATE_FURNITURE_REQUEST);
 	}
 
-	public List<Furniture> getFurnitureForUser() {
-		return cursorToList(FURNITURE_FOR_USER);
+	public static List<Furniture> getFurnitureForUser() {
+		return cursorToFurnitureList(FURNITURE_FOR_USER);
 	}
 	
-	private List<Furniture> cursorToList(Cursor c) {
+	private static List<Furniture> cursorToFurnitureList(Cursor c) {
 		List<Furniture> data = new ArrayList<Furniture>();
 		if (c != null) {
 			c.moveToFirst();
 		}
 		while (!c.isAfterLast()) {
-			data.add(createFurnitureFromCursor(c));
+			data.add(Furniture.createFurnitureFromCursor(c));
+			c.moveToNext();
+		}
+
+		return data;
+	}
+	
+	private static List<Drawer> cursorToDrawerList(Cursor c) {
+		List<Drawer> data = new ArrayList<>();
+		if (c != null) {
+			c.moveToFirst();
+		}
+		while (!c.isAfterLast()) {
+			data.add(Drawer.createDrawerFromCursor(c));
 			c.moveToNext();
 		}
 
 		return data;
 	}
 
-	public static Furniture getFurniture(long id) {
+	public static Furniture getFurniture(long furnitureId) {
 		refreshFurnitureCount();
-		Cursor cursor = db.getFurnitureById(id);
-		if (cursor != null) {
-			cursor.moveToFirst();
+		Cursor furnitureCursor = db.getFurnitureById(furnitureId);
+		if (furnitureCursor != null) {
+			furnitureCursor.moveToFirst();
 		}
-		return createFurnitureFromCursor(cursor);
-	}
-	
-	private static Furniture createFurnitureFromCursor(Cursor c) {
-		long id = c.getLong(c.getColumnIndex(FurnitureTable._ID));
-		String name = c.getString(c.getColumnIndex(FurnitureTable.COLUMN_NAME_NAME));
-		int width = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_WIDTH));
-		int height = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_HEIGHT));
-		long creatorId = c.getLong(c.getColumnIndex(FurnitureTable.COLUMN_NAME_CREATOR_ID));
-
-		Furniture furniture = new Furniture(name, width, height);
-		furniture.setId(id);
-		furniture.setCreatorId(creatorId);
+		Furniture furniture = Furniture.createFurnitureFromCursor(furnitureCursor);
 		
+		Cursor drawersCursor = db.getDrawersByFurniture(furnitureId);
+		List<Drawer> drawers = cursorToDrawerList(drawersCursor);
+		furniture.setDrawers(drawers);
 		return furniture;
 	}
 }

@@ -2,6 +2,11 @@ package com.findit.android.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import com.findit.android.dao.FindItContract.FurnitureTable;
+
+import android.database.Cursor;
 
 public class Furniture {
 	private long id;
@@ -12,12 +17,11 @@ public class Furniture {
 	private long creatorId;
 	
 	public Furniture(String name, int width, int height) {
-		this.id = id;
 		this.name = name;
 		this.drawers = new ArrayList<Drawer>();
 		this.width = width;
 		this.height = height;
-		this.creatorId = creatorId;
+		drawers = new ArrayList<>();
 	}
 	
 	public long getId() {
@@ -41,7 +45,11 @@ public class Furniture {
 	}
 	
 	public long getCreatorId() {
-		return this.creatorId;
+		return creatorId;
+	}
+	
+	public Drawer createDrawer(String name, int locIndex) {
+		return new Drawer(name, locIndex, id, creatorId);
 	}
 
 	public void setId(long id) {
@@ -51,7 +59,7 @@ public class Furniture {
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	public void setDrawers(List<Drawer> drawers) {
 		this.drawers = drawers;
 	}
@@ -76,6 +84,20 @@ public class Furniture {
 		this.drawers.remove(drawer);
 	}
 	
+	public static Furniture createFurnitureFromCursor(Cursor c) {
+		long id = c.getLong(c.getColumnIndex(FurnitureTable._ID));
+		String name = c.getString(c.getColumnIndex(FurnitureTable.COLUMN_NAME_NAME));
+		int width = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_WIDTH));
+		int height = c.getInt(c.getColumnIndex(FurnitureTable.COLUMN_NAME_HEIGHT));
+		long creatorId = c.getLong(c.getColumnIndex(FurnitureTable.COLUMN_NAME_CREATOR_ID));
+
+		Furniture furniture = new Furniture(name, width, height);
+		furniture.setId(id);
+		furniture.setCreatorId(creatorId);
+		
+		return furniture;
+	}
+	
 	@Override
 	public boolean equals(Object o) {
 		if (o == null) {
@@ -86,14 +108,14 @@ public class Furniture {
 		}
 		Furniture temp = (Furniture) o;
 		return this.id == temp.id && 
-				this.name.toLowerCase().equals(temp.name.toLowerCase()) && 
+				this.name.toLowerCase(Locale.US).equals(temp.name.toLowerCase(Locale.US)) && 
 				this.width == temp.width &&
 				this.height == temp.height;
 	}
 	
 	@Override
 	public int hashCode() {
-		return new Long(this.id).intValue();
+		return Long.valueOf(this.id).intValue();
 	}
 }
 

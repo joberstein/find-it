@@ -2,6 +2,16 @@ package com.findit.android.dao;
 
 import java.util.ArrayList;
 
+import com.findit.android.dao.FindItContract.DrawerTable;
+import com.findit.android.dao.FindItContract.FurnitureTable;
+import com.findit.android.dao.FindItContract.ItemTable;
+import com.findit.android.dao.FindItContract.ItemTypeTable;
+import com.findit.android.dao.FindItContract.UserTable;
+import com.findit.android.data.Drawer;
+import com.findit.android.data.Furniture;
+import com.findit.android.data.Item;
+import com.findit.android.data.User;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -11,15 +21,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import com.findit.android.dao.FindItContract.FurnitureTable;
-import com.findit.android.dao.FindItContract.ItemTypeTable;
-import com.findit.android.dao.FindItContract.UserTable;
-import com.findit.android.data.Furniture;
-import com.findit.android.data.User;
-
 public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper {
 	// If you change the database schema, you must increment the database version. 
-	public static final int DATABASE_VERSION = 1;
+	public static final int DATABASE_VERSION = 3;
 	public static final String DATABASE_NAME = "FindIt.db";
 	private static FindItDbHelper db;
 
@@ -172,6 +176,137 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 	public void deleteFurniture(long id) {
 		String[] projection = { FurnitureTable._ID };
 		this.delete(FurnitureTable.TABLE_NAME, id, projection);
+	}
+	
+	/********************************************************************************
+	 * DRAWER TABLE
+	 ********************************************************************************/
+	public Cursor getDrawerById(long id) {
+		String[] projection = {
+			DrawerTable._ID,
+			DrawerTable.COLUMN_NAME_NAME,
+			DrawerTable.COLUMN_NAME_LOC_INDEX,
+			DrawerTable.COLUMN_NAME_PARENT_ID,
+			DrawerTable.COLUMN_NAME_CREATOR_ID
+		};
+		String condition = ItemTable._ID + "=?";
+		String[] whereValues = { Long.toString(id) };
+		return this.get(DrawerTable.TABLE_NAME, projection, condition, whereValues, "", "");
+	}
+	
+	public Cursor getDrawersByFurniture(long parentId) {
+		String[] projection = {
+			DrawerTable._ID,
+			DrawerTable.COLUMN_NAME_NAME,
+			DrawerTable.COLUMN_NAME_LOC_INDEX,
+			DrawerTable.COLUMN_NAME_PARENT_ID,
+			DrawerTable.COLUMN_NAME_CREATOR_ID
+		};
+		String condition = DrawerTable.COLUMN_NAME_PARENT_ID + "=?";
+		String[] whereValues = { Long.toString(parentId) };
+		return this.get(DrawerTable.TABLE_NAME, projection, condition, whereValues, "", "");
+	}
+	
+	public Cursor getDrawersByCreator(long creatorId) {
+		String[] projection = {
+			DrawerTable._ID,
+			DrawerTable.COLUMN_NAME_NAME,
+			DrawerTable.COLUMN_NAME_LOC_INDEX,
+			DrawerTable.COLUMN_NAME_PARENT_ID,
+			DrawerTable.COLUMN_NAME_CREATOR_ID
+		};
+		String condition = DrawerTable.COLUMN_NAME_CREATOR_ID + "=?";
+		String[] whereValues = { Long.toString(creatorId) };
+		return this.get(DrawerTable.TABLE_NAME, projection, condition, whereValues, "", "");
+	}
+	
+	public long saveDrawer(Drawer drawer) {
+		ContentValues values = new ContentValues();
+		values.put(DrawerTable.COLUMN_NAME_NAME, drawer.getName());
+		values.put(DrawerTable.COLUMN_NAME_LOC_INDEX, drawer.getLocIndex());
+		values.put(DrawerTable.COLUMN_NAME_PARENT_ID, drawer.getParentId());
+		values.put(DrawerTable.COLUMN_NAME_CREATOR_ID, drawer.getCreatorId());
+		return this.create(DrawerTable.TABLE_NAME, values);
+	}
+	
+	public void updateDrawer(Drawer drawer) {
+		ContentValues values = new ContentValues();
+		values.put(DrawerTable.COLUMN_NAME_NAME, drawer.getName());
+		values.put(DrawerTable.COLUMN_NAME_LOC_INDEX, drawer.getLocIndex());
+		values.put(DrawerTable.COLUMN_NAME_PARENT_ID, drawer.getParentId());
+		values.put(DrawerTable.COLUMN_NAME_CREATOR_ID, drawer.getCreatorId());
+		this.update(DrawerTable.TABLE_NAME, drawer.getId(), values);
+	}
+	
+	public void deleteDrawer(long id) {
+		String[] projection = { DrawerTable._ID };
+		this.delete(DrawerTable.TABLE_NAME, id, projection);
+	}
+	
+	
+	/********************************************************************************
+	 * ITEM TABLE
+	 ********************************************************************************/
+	public Cursor getItemById(long id) {
+		String[] projection = {
+			ItemTable._ID,
+			ItemTable.COLUMN_NAME_NAME,
+			ItemTable.COLUMN_NAME_TYPE,
+			ItemTable.COLUMN_NAME_PARENT_ID,
+			ItemTable.COLUMN_NAME_CREATOR_ID
+		};
+		String condition = ItemTable._ID + "=?";
+		String[] whereValues = { Long.toString(id) };
+		return this.get(ItemTable.TABLE_NAME, projection, condition, whereValues, "", "");
+	}
+	
+	public Cursor getItemsByParent(long parentId) {
+		String[] projection = {
+			ItemTable._ID,
+			ItemTable.COLUMN_NAME_NAME,
+			ItemTable.COLUMN_NAME_TYPE,
+			ItemTable.COLUMN_NAME_PARENT_ID,
+			ItemTable.COLUMN_NAME_CREATOR_ID
+		};
+		String condition = ItemTable.COLUMN_NAME_PARENT_ID + "=?";
+		String[] whereValues = { Long.toString(parentId) };
+		return this.get(ItemTable.TABLE_NAME, projection, condition, whereValues, "", "");
+	}
+	
+	public Cursor getItemsByCreator(long creatorId) {
+		String[] projection = {
+			ItemTable._ID,
+			ItemTable.COLUMN_NAME_NAME,
+			ItemTable.COLUMN_NAME_TYPE,
+			ItemTable.COLUMN_NAME_PARENT_ID,
+			ItemTable.COLUMN_NAME_CREATOR_ID
+		};
+		String condition = ItemTable.COLUMN_NAME_CREATOR_ID + "=?";
+		String[] whereValues = { Long.toString(creatorId) };
+		return this.get(ItemTable.TABLE_NAME, projection, condition, whereValues, "", "");
+	}
+	
+	public long saveItem(Item item) {
+		ContentValues values = new ContentValues();
+		values.put(ItemTable.COLUMN_NAME_NAME, item.getName());
+		values.put(ItemTable.COLUMN_NAME_TYPE, item.getType().name());
+		values.put(ItemTable.COLUMN_NAME_PARENT_ID, item.getParentId());
+		values.put(ItemTable.COLUMN_NAME_CREATOR_ID, item.getCreatorId());
+		return this.create(ItemTable.TABLE_NAME, values);
+	}
+	
+	public void updateItem(Item item) {
+		ContentValues values = new ContentValues();
+		values.put(ItemTable.COLUMN_NAME_NAME, item.getName());
+		values.put(ItemTable.COLUMN_NAME_TYPE, item.getType().name());
+		values.put(ItemTable.COLUMN_NAME_PARENT_ID, item.getParentId());
+		values.put(ItemTable.COLUMN_NAME_CREATOR_ID, item.getCreatorId());
+		this.update(FurnitureTable.TABLE_NAME, item.getId(), values);
+	}
+	
+	public void deleteItem(long id) {
+		String[] projection = { ItemTable._ID };
+		this.delete(ItemTable.TABLE_NAME, id, projection);
 	}
 	
 	
