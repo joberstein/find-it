@@ -1,5 +1,6 @@
 package com.findit.android.activity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.findit.android.R;
@@ -28,7 +29,8 @@ public class CreateFurniture extends Activity {
 	private String name;
 	private int width;
 	private int height;
-
+	private boolean[] restoreSavedStateSelected;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -42,15 +44,65 @@ public class CreateFurniture extends Activity {
 		width = receivedIntent.getIntExtra("furnitureWidth", 0);
 		height = receivedIntent.getIntExtra("furnitureHeight", 0);
 		
-		CheckBox selectAllCheckBox = ( CheckBox ) findViewById(R.id.selectAllDrawers);
+		if (savedInstanceState != null) {
+			int numButtons = savedInstanceState.getInt("size");
+			List<Button> restoredSelectorButtons = new ArrayList<>();
+			restoreSavedStateSelected = new boolean[numButtons];
+			if (savedInstanceState.getBoolean("isChecked")) {
+				for (int i = 0; i < numButtons; i++) {
+					Bundle bundle = savedInstanceState.getBundle(Integer.toString(i));
+					restoreSavedStateSelected[i] = bundle.getBoolean("isSelected");
+					Button button = TableCreator.restoreSelectorButton(this, 1);
+					restoredSelectorButtons.add(button);
+				}
+				TableCreator.setSelectorButtons(restoredSelectorButtons);
+			}
+			else {
+				for (int i = 0; i < numButtons; i++) {
+					Bundle bundle = savedInstanceState.getBundle(Integer.toString(i));
+					Button button = TableCreator.restoreSelectorButton(this, bundle.getInt("id"));
+					restoredSelectorButtons.add(button);
+				}
+				TableCreator.setSelectorButtons(restoredSelectorButtons);
+			}
+		}
+		else {
+			TableCreator.createSelectorButtons(this, width, height);
+		}
+
+		CheckBox selectAllCheckBox = (CheckBox) findViewById(R.id.selectAllDrawers);
 		selectAllCheckBox.setOnCheckedChangeListener(new SelectAllDrawersListener());
-				
+		
 		TableLayout createFurnitureTable = (TableLayout) this.findViewById(R.id.createFurnitureTable);
-		TableCreator.createSelectorButtons(this, width, height);
 		TableCreator.createButtonTable(this, createFurnitureTable, TableCreator.getSelectorButtons(), width, height);
 		
 		TextView textView = (TextView) this.findViewById(R.id.furnitureName);
 		textView.setText(name);
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle instance) {
+		super.onRestoreInstanceState(instance);
+		SelectAllDrawersListener.setSavedStateSelected(restoreSavedStateSelected);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle instance) {
+		super.onSaveInstanceState(instance);
+		List<Button> selectorButtons = TableCreator.getSelectorButtons();
+		boolean[] savedStateSelected = SelectAllDrawersListener.getSavedStateSelected();
+		CheckBox checkbox = (CheckBox) findViewById(R.id.selectAllDrawers);
+		instance.putBoolean("isChecked", checkbox.isChecked());
+		instance.putInt("size", selectorButtons.size());
+		
+		for (int i = 0; i < selectorButtons.size(); i++) {
+			Bundle buttonBundle = new Bundle();
+			int id =  selectorButtons.get(i).getId();
+			buttonBundle.putInt("id", id);
+			boolean isSelected = (checkbox.isChecked()) ? savedStateSelected[i] : (id == 1);
+			buttonBundle.putBoolean("isSelected", isSelected);
+			instance.putBundle(Integer.toString(i), buttonBundle);
+		}
 	}
 
 	public void createFurniture(View view) {

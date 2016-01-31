@@ -1,5 +1,7 @@
 package com.findit.android.listener;
 
+import com.findit.android.utils.TableCreator;
+
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
@@ -14,24 +16,15 @@ public class SelectDrawerToCreateListener implements OnClickListener {
 		this.selected = false;
 	}
 	
-	@SuppressLint("NewApi")
 	@Override
 	public void onClick(View view) {
 		this.toggleSelected();
 		Button button = (Button) view;
-		GradientDrawable border = new GradientDrawable();
-		border.setStroke(1, Color.WHITE);
+		int id = (this.selected) ? 1 : 0;
+		int color = (this.selected) ? Color.GREEN : Color.LTGRAY;
 		
-		if (this.selected) {
-			button.setId(1);
-			border.setColor(Color.GREEN);
-			border.setAlpha(200);
-		}
-		else {
-			button.setId(0);
-			border.setColor(Color.LTGRAY);
-		}
-		button.setBackground(border);
+		button.setId(id);
+		TableCreator.setButtonBackground(button, color);
 	}
 	
 	public boolean getSelected() {

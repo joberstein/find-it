@@ -15,6 +15,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.TableLayout;
@@ -57,7 +58,6 @@ public class TableCreator {
 		selectorButtons = buttons;
 	}
 
-	@SuppressLint("NewApi")
 	public static List<Button> createDrawerButtons(Context context, long furnitureId, int width, int height) {
 		List<Drawer> drawers = ViewFurniture.getFurniture(furnitureId).getDrawers();
 		Set<Integer> selectedDrawers = new HashSet<>();
@@ -76,10 +76,8 @@ public class TableCreator {
 				buttons.add(button);
 				drawerCounter++;
 			} else {
-				GradientDrawable background = new GradientDrawable();
 				Button button = new Button(context);
-				background.setAlpha(0);
-				button.setBackground(background);
+				button.setVisibility(View.INVISIBLE);
 				buttons.add(button);
 			}
 		}
@@ -112,16 +110,32 @@ public class TableCreator {
 		return buttons;
 	}
 
-	@SuppressLint("NewApi")
 	private static Button createSelectorButton(Context context) {
 		Button button = new Button(context);
-		GradientDrawable border = new GradientDrawable();
-		border.setStroke(1, Color.WHITE);
-		border.setColor(Color.LTGRAY);
+		setButtonBackground(button, Color.LTGRAY);
 		button.setId(0);
-		button.setBackground(border);
 		button.setOnClickListener(new SelectDrawerToCreateListener());
 		return button;
+	}
+	
+	public static Button restoreSelectorButton(Context context, int id) {
+		Button button = new Button(context);
+		setButtonBackground(button, Color.LTGRAY);
+		button.setId(id);
+		button.setOnClickListener(new SelectDrawerToCreateListener());
+		if (id == 1) {
+			button.performClick();
+		}
+		return button;
+	}
+	
+	@SuppressLint("NewApi")
+	public static void setButtonBackground(Button button, int color) {
+		GradientDrawable background = new GradientDrawable();
+		background.setStroke(1, Color.WHITE);
+		background.setColor(color);
+		background.setAlpha(200);
+		button.setBackground(background);
 	}
 
 	private static void resetDrawerCounter() {
