@@ -19,10 +19,10 @@ public class Drawer extends Item {
 	
 	public DrawerItem createDrawerItem(String name, ItemType type) {
 		if (type.equals(ItemType.CATEGORY)) {
-			return new Category(name, this.getId(), this.getCreatorId());
+			return new Category(name, this.getId(), this.getId(), this.getCreatorId());
 		}
 		else if (type.equals(ItemType.SINGLE_ITEM)) {
-			return new SingleItem(name, this.getId(), this.getCreatorId());
+			return new SingleItem(name, this.getId(), this.getId(), this.getCreatorId());
 		}
 		return null;
 	}

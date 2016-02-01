@@ -1,8 +1,8 @@
 package com.findit.android.dao;
 
 import com.findit.android.data.Drawer;
+import com.findit.android.data.DrawerItem;
 import com.findit.android.data.Furniture;
-import com.findit.android.data.Item;
 import com.findit.android.data.User;
 
 import android.database.Cursor;
@@ -32,7 +32,7 @@ public interface IFindItDbHelper {
 	Cursor getItemById(long id);
 	Cursor getItemsByParent(long parentId);
 	Cursor getItemsByCreator(long creatorId);
-	long saveItem(Item item);
-	void updateItem(Item item);
+	long saveItem(DrawerItem item);
+	void updateItem(DrawerItem item);
 	void deleteItem(long id);
 }

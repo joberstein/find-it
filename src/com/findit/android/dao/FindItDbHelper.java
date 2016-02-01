@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import com.findit.android.dao.FindItContract.DrawerTable;
 import com.findit.android.dao.FindItContract.FurnitureTable;
 import com.findit.android.dao.FindItContract.ItemTable;
-import com.findit.android.dao.FindItContract.ItemTypeTable;
 import com.findit.android.dao.FindItContract.UserTable;
 import com.findit.android.data.Drawer;
+import com.findit.android.data.DrawerItem;
 import com.findit.android.data.Furniture;
-import com.findit.android.data.Item;
 import com.findit.android.data.User;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -23,7 +23,7 @@ import android.util.Log;
 
 public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper {
 	// If you change the database schema, you must increment the database version. 
-	public static final int DATABASE_VERSION = 3;
+	public static final int DATABASE_VERSION = 4;
 	public static final String DATABASE_NAME = "FindIt.db";
 	private static FindItDbHelper db;
 
@@ -39,6 +39,13 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 		return db;
 	}
 
+	@SuppressLint("NewApi")
+	@Override
+	public void onConfigure(SQLiteDatabase db){
+	    db.setForeignKeyConstraintsEnabled(true);
+	}
+	
+	@Override
 	public void onCreate(SQLiteDatabase db) {
 		for (String createTableScript : FindItContract.CREATE_TABLES) {
 			db.execSQL(createTableScript);
@@ -61,9 +68,6 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 	public void createTables(Context context) {
 		for (String createTableScript : FindItContract.CREATE_TABLES) {
 			getWritableDatabase().execSQL(createTableScript);
-		}
-		for (String insertScript : ItemTypeTable.insertValues()) {
-			getWritableDatabase().execSQL(insertScript);
 		}
 		close();
 	}
@@ -252,6 +256,7 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 			ItemTable._ID,
 			ItemTable.COLUMN_NAME_NAME,
 			ItemTable.COLUMN_NAME_TYPE,
+			ItemTable.COLUMN_NAME_DRAWER_ID,
 			ItemTable.COLUMN_NAME_PARENT_ID,
 			ItemTable.COLUMN_NAME_CREATOR_ID
 		};
@@ -265,6 +270,7 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 			ItemTable._ID,
 			ItemTable.COLUMN_NAME_NAME,
 			ItemTable.COLUMN_NAME_TYPE,
+			ItemTable.COLUMN_NAME_DRAWER_ID,
 			ItemTable.COLUMN_NAME_PARENT_ID,
 			ItemTable.COLUMN_NAME_CREATOR_ID
 		};
@@ -278,6 +284,7 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 			ItemTable._ID,
 			ItemTable.COLUMN_NAME_NAME,
 			ItemTable.COLUMN_NAME_TYPE,
+			ItemTable.COLUMN_NAME_DRAWER_ID,
 			ItemTable.COLUMN_NAME_PARENT_ID,
 			ItemTable.COLUMN_NAME_CREATOR_ID
 		};
@@ -286,19 +293,21 @@ public class FindItDbHelper extends SQLiteOpenHelper implements IFindItDbHelper 
 		return this.get(ItemTable.TABLE_NAME, projection, condition, whereValues, "", "");
 	}
 	
-	public long saveItem(Item item) {
+	public long saveItem(DrawerItem item) {
 		ContentValues values = new ContentValues();
 		values.put(ItemTable.COLUMN_NAME_NAME, item.getName());
 		values.put(ItemTable.COLUMN_NAME_TYPE, item.getType().name());
+		values.put(ItemTable.COLUMN_NAME_DRAWER_ID, item.getDrawerId());
 		values.put(ItemTable.COLUMN_NAME_PARENT_ID, item.getParentId());
 		values.put(ItemTable.COLUMN_NAME_CREATOR_ID, item.getCreatorId());
 		return this.create(ItemTable.TABLE_NAME, values);
 	}
 	
-	public void updateItem(Item item) {
+	public void updateItem(DrawerItem item) {
 		ContentValues values = new ContentValues();
 		values.put(ItemTable.COLUMN_NAME_NAME, item.getName());
 		values.put(ItemTable.COLUMN_NAME_TYPE, item.getType().name());
+		values.put(ItemTable.COLUMN_NAME_DRAWER_ID, item.getDrawerId());
 		values.put(ItemTable.COLUMN_NAME_PARENT_ID, item.getParentId());
 		values.put(ItemTable.COLUMN_NAME_CREATOR_ID, item.getCreatorId());
 		this.update(FurnitureTable.TABLE_NAME, item.getId(), values);

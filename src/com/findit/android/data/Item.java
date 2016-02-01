@@ -36,7 +36,6 @@ public abstract class Item {
 		return this.creatorId;
 	}
 	
-	// used for testing
 	public void setId(long id) {
 		this.id = id;
 	}
@@ -49,7 +48,6 @@ public abstract class Item {
 		this.type = type;
 	}
 	
-	// used for testing
 	public void setParentId(long parentId) {
 		this.parentId = parentId;
 	}
