@@ -28,5 +28,11 @@
         android:id="@+id/database"
         android:orderInCategory="4"
         android:title="View Database"/>
+      
+      
+      <item
+        android:id="@+id/delete_account"
+        android:orderInCategory="5"
+        android:title="@string/delete_account"/>
 
 </menu>

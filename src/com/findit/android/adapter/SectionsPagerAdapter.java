@@ -11,7 +11,7 @@ import android.os.Bundle;
 import android.support.v13.app.FragmentPagerAdapter;
 
 import com.findit.android.activity.ViewFurniture;
-import com.findit.android.dao.FindItContract.FurnitureTable;
+import com.findit.android.db.FindItContract.FurnitureTable;
 import com.findit.android.fragment.EmptyFurnitureFragment;
 import com.findit.android.fragment.FurnitureFragment;
 
@@ -56,7 +56,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 	// Took out item at 0, added a new item, and received old view before removal.
 	@Override
 	public Fragment getItem(int position) {
-		if (ViewFurniture.FURNITURE_COUNT == 0) {
+		if (ViewFurniture.getFurnitureCount() == 0) {
 			return new EmptyFurnitureFragment();
 		}
 		else {
@@ -105,7 +105,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	public void addFragment(Fragment fragment) {
-		if (ViewFurniture.FURNITURE_COUNT == 1) {
+		if (ViewFurniture.getFurnitureCount() == 1) {
 			mFragments = new ArrayList<Fragment>();
 		}
 		mFragments.add(fragment);

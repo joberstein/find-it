@@ -1,12 +1,11 @@
 package com.findit.android.fragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.findit.android.R;
 import com.findit.android.activity.ViewFurniture;
-import com.findit.android.dao.FindItContract.FurnitureTable;
 import com.findit.android.data.Furniture;
+import com.findit.android.db.FindItContract.FurnitureTable;
 import com.findit.android.utils.TableCreator;
 
 import android.app.Fragment;
@@ -28,7 +27,7 @@ public class FurnitureFragment extends Fragment {
 		setHasOptionsMenu(true);
 
 		Bundle args = getArguments();
-		if (ViewFurniture.FURNITURE_COUNT == 0) {
+		if (ViewFurniture.getFurnitureCount() == 0) {
 			return inflater.inflate(R.layout.fragment_empty_furniture, container, false);
 		}
 
@@ -41,17 +40,12 @@ public class FurnitureFragment extends Fragment {
 			String name = args.getString(FurnitureTable.COLUMN_NAME_NAME, "");
 			int width = args.getInt(FurnitureTable.COLUMN_NAME_WIDTH, 1);
 			int height = args.getInt(FurnitureTable.COLUMN_NAME_HEIGHT, 1);
-
-			furnitureNameView.setText(name);
-			List<Boolean> isDrawerList = new ArrayList<>();
-			// TODO remove
-			for (int i = 0; i < 100; i++) {
-				isDrawerList.add((i % 4) != 0);
-			}
 			
+			furnitureNameView.setText(name);
 			List<Button> drawerButtons = TableCreator.createDrawerButtons(getActivity(), furnitureId, width, height);
 			TableCreator.createButtonTable(getActivity(), furnitureTable, drawerButtons, width, height);
 		}
+		
 		return view;
 	}
 

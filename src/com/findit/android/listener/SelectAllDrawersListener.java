@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.findit.android.utils.TableCreator;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.widget.Button;
 import android.widget.CompoundButton;

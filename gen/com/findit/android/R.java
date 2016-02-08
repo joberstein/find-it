@@ -2045,6 +2045,7 @@ containing a value of this type.
         public static final int database=0x7f090081;
         public static final int decor_content_parent=0x7f09003f;
         public static final int default_activity_button=0x7f090027;
+        public static final int delete_account=0x7f090082;
         public static final int disableHome=0x7f09000d;
         public static final int edit_query=0x7f090043;
         public static final int end=0x7f09001f;
@@ -2296,6 +2297,7 @@ containing a value of this type.
         public static final int abc_toolbar_collapse_description=0x7f0a0004;
         public static final int add_furniture=0x7f0a001b;
         public static final int app_name=0x7f0a0014;
+        public static final int delete_account=0x7f0a0020;
         public static final int logout=0x7f0a001f;
         public static final int remove_furniture=0x7f0a001c;
         public static final int search=0x7f0a001d;

@@ -59,7 +59,7 @@ public class TableCreator {
 	}
 
 	public static List<Button> createDrawerButtons(Context context, long furnitureId, int width, int height) {
-		List<Drawer> drawers = ViewFurniture.getFurniture(furnitureId).getDrawers();
+		List<Drawer> drawers = ViewFurniture.getFurniture(furnitureId).getItems();
 		Set<Integer> selectedDrawers = new HashSet<>();
 
 		for (int i = 0; i < drawers.size(); i++) {

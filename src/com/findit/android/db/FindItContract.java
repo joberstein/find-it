@@ -1,4 +1,4 @@
-package com.findit.android.dao;
+package com.findit.android.db;
 
 import android.provider.BaseColumns;
 
@@ -8,14 +8,14 @@ public final class FindItContract {
         UserTable.CREATE_TABLE,
         FurnitureTable.CREATE_TABLE,
         DrawerTable.CREATE_TABLE,
-        ItemTable.CREATE_TABLE
+        DrawerItemTable.CREATE_TABLE
     };
     
     public static final String[] DELETE_TABLES = {
         UserTable.DELETE_TABLE,
         FurnitureTable.DELETE_TABLE,
         DrawerTable.DELETE_TABLE,
-        ItemTable.DELETE_TABLE
+        DrawerItemTable.DELETE_TABLE
     };
 
 	public static final String _ID = "id";
@@ -109,7 +109,7 @@ public final class FindItContract {
 		}
 	}
 	
-	public static abstract class ItemTable implements BaseColumns {
+	public static abstract class DrawerItemTable implements BaseColumns {
 		public static final String TABLE_NAME = "item";
 		public static final String COLUMN_NAME_NAME = "name";
 		public static final String COLUMN_NAME_TYPE = "type";
@@ -118,19 +118,19 @@ public final class FindItContract {
 		public static final String COLUMN_NAME_CREATOR_ID = "creator_id";
 		
 		private static final String CREATE_TABLE =
-		    "CREATE TABLE " + ItemTable.TABLE_NAME + " (" +
+		    "CREATE TABLE " + DrawerItemTable.TABLE_NAME + " (" +
 		    _ID + AUTO_INCREMENT + COMMA_SEP +
-		    ItemTable.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-		    ItemTable.COLUMN_NAME_TYPE + " INTEGER" + COMMA_SEP +
-		    ItemTable.COLUMN_NAME_DRAWER_ID + " INTEGER" + COMMA_SEP +
-		    ItemTable.COLUMN_NAME_PARENT_ID + " INTEGER" + COMMA_SEP +
-		    ItemTable.COLUMN_NAME_CREATOR_ID + " INTEGER NOT NULL" + COMMA_SEP +
-		    " FOREIGN KEY(" + ItemTable.COLUMN_NAME_DRAWER_ID + ") REFERENCES " + DrawerTable.TABLE_NAME + "(" + DrawerTable._ID + ") ON DELETE CASCADE" + COMMA_SEP +
-		    " FOREIGN KEY(" + ItemTable.COLUMN_NAME_CREATOR_ID + ") REFERENCES " + UserTable.TABLE_NAME + "(" + UserTable._ID + ") ON DELETE CASCADE" +
+		    DrawerItemTable.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
+		    DrawerItemTable.COLUMN_NAME_TYPE + " INTEGER" + COMMA_SEP +
+		    DrawerItemTable.COLUMN_NAME_DRAWER_ID + " INTEGER" + COMMA_SEP +
+		    DrawerItemTable.COLUMN_NAME_PARENT_ID + " INTEGER" + COMMA_SEP +
+		    DrawerItemTable.COLUMN_NAME_CREATOR_ID + " INTEGER NOT NULL" + COMMA_SEP +
+		    " FOREIGN KEY(" + DrawerItemTable.COLUMN_NAME_DRAWER_ID + ") REFERENCES " + DrawerTable.TABLE_NAME + "(" + DrawerTable._ID + ") ON DELETE CASCADE" + COMMA_SEP +
+		    " FOREIGN KEY(" + DrawerItemTable.COLUMN_NAME_CREATOR_ID + ") REFERENCES " + UserTable.TABLE_NAME + "(" + UserTable._ID + ") ON DELETE CASCADE" +
 		    " )";
 
 		private static final String DELETE_TABLE =
-		    "DROP TABLE IF EXISTS " + ItemTable.TABLE_NAME;
+		    "DROP TABLE IF EXISTS " + DrawerItemTable.TABLE_NAME;
 		
 		public static String createTable() {
 			return CREATE_TABLE;

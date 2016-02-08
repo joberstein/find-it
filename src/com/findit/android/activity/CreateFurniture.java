@@ -5,10 +5,13 @@ import java.util.List;
 
 import com.findit.android.R;
 import com.findit.android.activity.profile.Login;
-import com.findit.android.dao.FindItContract.FurnitureTable;
-import com.findit.android.dao.FindItDbHelper;
 import com.findit.android.data.Drawer;
 import com.findit.android.data.Furniture;
+import com.findit.android.db.FindItContract.FurnitureTable;
+import com.findit.android.db.dao.DrawerDao;
+import com.findit.android.db.dao.DrawerDaoImpl;
+import com.findit.android.db.dao.FurnitureDao;
+import com.findit.android.db.dao.FurnitureDaoImpl;
 import com.findit.android.listener.SelectAllDrawersListener;
 import com.findit.android.utils.TableCreator;
 
@@ -24,7 +27,8 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 public class CreateFurniture extends Activity {
-	private FindItDbHelper db;
+	private FurnitureDao furnitureDao;
+	private DrawerDao drawerDao;
 	private SharedPreferences preferences;
 	private String name;
 	private int width;
@@ -34,7 +38,8 @@ public class CreateFurniture extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		db = FindItDbHelper.getInstance(this);
+		furnitureDao = FurnitureDaoImpl.getInstance(this);
+		drawerDao = DrawerDaoImpl.getInstance(this);
 		preferences = getSharedPreferences(Login.PREFS_NAME, Context.MODE_PRIVATE);
 		
 		setContentView(R.layout.create_furniture);
@@ -106,9 +111,9 @@ public class CreateFurniture extends Activity {
 	}
 
 	public void createFurniture(View view) {
-		Furniture newFurniture = new Furniture(name, width, height);
-		newFurniture.setCreatorId(preferences.getLong(Login.USER_ID, -1));
-		long id = db.saveFurniture(newFurniture);
+		long creatorId = preferences.getLong(Login.USER_ID, -1);
+		Furniture newFurniture = new Furniture(name, width, height, creatorId);
+		long id = furnitureDao.saveFurniture(newFurniture);
 		newFurniture.setId(id);
 		
 		this.createDrawersForFurniture(newFurniture);
@@ -132,9 +137,9 @@ public class CreateFurniture extends Activity {
 			if (selectorButtons.get(i).getId() == 1) {
 				drawerLocIndex++;
 				Drawer newDrawer = furniture.createDrawer("Drawer " + drawerLocIndex, i);
-				long id = db.saveDrawer(newDrawer);
+				long id = drawerDao.saveDrawer(newDrawer);
 				newDrawer.setId(id);
-				furniture.addDrawer(newDrawer);
+				furniture.addItem(newDrawer);
 			}
 		}
 	}

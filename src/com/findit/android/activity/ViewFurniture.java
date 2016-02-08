@@ -6,11 +6,16 @@ import java.util.List;
 import com.findit.android.R;
 import com.findit.android.activity.profile.Login;
 import com.findit.android.adapter.SectionsPagerAdapter;
-import com.findit.android.dao.AndroidDatabaseManager;
-import com.findit.android.dao.FindItContract.FurnitureTable;
-import com.findit.android.dao.FindItDbHelper;
 import com.findit.android.data.Drawer;
 import com.findit.android.data.Furniture;
+import com.findit.android.db.AndroidDatabaseManager;
+import com.findit.android.db.FindItContract.FurnitureTable;
+import com.findit.android.db.dao.DrawerDao;
+import com.findit.android.db.dao.DrawerDaoImpl;
+import com.findit.android.db.dao.FurnitureDao;
+import com.findit.android.db.dao.FurnitureDaoImpl;
+import com.findit.android.db.dao.UserDao;
+import com.findit.android.db.dao.UserDaoImpl;
 import com.findit.android.fragment.EmptyFurnitureFragment;
 import com.findit.android.fragment.FurnitureFragment;
 
@@ -30,18 +35,15 @@ import android.view.MenuItem;
 import android.view.View;
 
 public class ViewFurniture extends AppCompatActivity {
-	public static int FURNITURE_COUNT;
-	public static Cursor FURNITURE_FOR_USER;
-	
-	public static String CURRENT_NAME;
-	public static int CURRENT_WIDTH;
-	public static int CURRENT_HEIGHT;
-	
 	public static final int CREATE_FURNITURE_REQUEST = 1;
 	
 	private static final String CURRENT_PAGE = "currentPage";
+	private static int furnitureCount;
+	private static List<Furniture> furnitureForUser;
 	private static int currentPage;
-	private static FindItDbHelper db;
+	private static FurnitureDao furnitureDao;
+	private static DrawerDao drawerDao;
+	private static UserDao userDao;
 	private static SharedPreferences preferences;
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -62,7 +64,9 @@ public class ViewFurniture extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setTitle("Your Furniture");
 		setContentView(R.layout.view_furniture);
-		db = FindItDbHelper.getInstance(this);
+		furnitureDao = FurnitureDaoImpl.getInstance(this);
+		drawerDao = DrawerDaoImpl.getInstance(this);
+		userDao = UserDaoImpl.getInstance(this);
 		preferences = getSharedPreferences(Login.PREFS_NAME, Context.MODE_PRIVATE);
 
 		// Create the adapter that will return a fragment for each of the sections of the activity.
@@ -73,8 +77,8 @@ public class ViewFurniture extends AppCompatActivity {
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 		refreshFurnitureCount();
 
-		if (FURNITURE_COUNT > 0) {
-			reAddFurniture(getFurnitureForUser());
+		if (furnitureCount > 0) {
+			reAddFurniture(furnitureForUser);
 		}
 
 		if (savedInstanceState != null) {
@@ -93,7 +97,7 @@ public class ViewFurniture extends AppCompatActivity {
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem removeFurniture = menu.findItem(R.id.remove_furniture);      
-		removeFurniture.setVisible((FURNITURE_COUNT > 0)); 
+		removeFurniture.setVisible((furnitureCount > 0)); 
 		return true;
 	}
 
@@ -109,7 +113,11 @@ public class ViewFurniture extends AppCompatActivity {
 		else if (id == R.id.search) {
 			return true;
 		}
-		else if (id == R.id.logout) {
+		else if (id == R.id.logout || id == R.id.delete_account) {
+			if (id == R.id.delete_account) {
+				long userToDelete = preferences.getLong(Login.USER_ID, -1);
+				userDao.deleteUser(userToDelete);
+			}
 			Editor editor = preferences.edit();
 			editor.putLong(Login.USER_ID, -1);
 			editor.commit();
@@ -178,9 +186,9 @@ public class ViewFurniture extends AppCompatActivity {
 		Fragment newFragment = null;
 
 		if (findViewById(R.id.fragment_container) != null) {
-			newFragment = FurnitureFragment.newInstance(FURNITURE_COUNT - 1, furnitureId);
+			newFragment = FurnitureFragment.newInstance(furnitureCount - 1, furnitureId);
 
-			if (FURNITURE_COUNT == 1) {
+			if (furnitureCount == 1) {
 				fm.beginTransaction().replace(R.id.fragment_container, newFragment, fragTag).commit();
 			} 
 			else {
@@ -188,7 +196,7 @@ public class ViewFurniture extends AppCompatActivity {
 			}
 			mSectionsPagerAdapter.addFragment(newFragment);
 			mSectionsPagerAdapter.notifyDataSetChanged();
-			currentPage = FURNITURE_COUNT - 1;
+			currentPage = furnitureCount - 1;
 			mViewPager.setCurrentItem(currentPage);
 		}
 	}
@@ -196,13 +204,12 @@ public class ViewFurniture extends AppCompatActivity {
 	private void removeFurniture(int fragmentPosition) {
 		Fragment fragment = mSectionsPagerAdapter.getFragmentAtPosition(fragmentPosition);
 		long furnitureId = Long.parseLong(fragment.getTag());
-		removeItemsByFurniture(furnitureId);
-		db.deleteFurniture(furnitureId);
+		furnitureDao.deleteFurniture(furnitureId);
 		refreshFurnitureCount();
 		FragmentManager fm = getFragmentManager();
 
 		if (findViewById(R.id.fragment_container) != null) {
-			if (FURNITURE_COUNT == 0) {
+			if (furnitureCount == 0) {
 				fm.beginTransaction().replace(R.id.fragment_container, new EmptyFurnitureFragment()).commit();
 			}
 			else {
@@ -210,19 +217,9 @@ public class ViewFurniture extends AppCompatActivity {
 			}
 			mSectionsPagerAdapter.removeFragment(fragmentPosition);
 			mSectionsPagerAdapter.notifyDataSetChanged();
-			int newPosition = (fragmentPosition == FURNITURE_COUNT) ? fragmentPosition - 1: fragmentPosition;
+			int newPosition = (fragmentPosition == furnitureCount) ? fragmentPosition - 1: fragmentPosition;
 			currentPage = newPosition;
 			mViewPager.setCurrentItem(currentPage);
-		}
-	}
-	
-	private void removeItemsByFurniture(long furnitureId) {
-		Furniture furniture = getFurniture(furnitureId);
-		List<Drawer> drawers = furniture.getDrawers();
-		for (int i = 0; i < drawers.size(); i++) {
-			Drawer drawer = drawers.get(i);
-			db.deleteItem(drawer.getId());
-			furniture.removeDrawer(drawer); // TODO is this necessary?
 		}
 	}
 
@@ -251,8 +248,9 @@ public class ViewFurniture extends AppCompatActivity {
 
 	private static void refreshFurnitureCount() {
 		long userId = preferences.getLong(Login.USER_ID, -1);
-		FURNITURE_FOR_USER = db.getFurnitureByCreator(userId);
-		FURNITURE_COUNT = FURNITURE_FOR_USER.getCount();
+		Cursor furnitureCursor = furnitureDao.getFurnitureByCreator(userId);
+		furnitureForUser = furnitureDao.toFurnitureList(furnitureCursor);
+		furnitureCount = furnitureCursor.getCount();
 	}
 
 	public void forwardToAddFurniture(View view) {
@@ -260,47 +258,19 @@ public class ViewFurniture extends AppCompatActivity {
 		startActivityForResult(intent, CREATE_FURNITURE_REQUEST);
 	}
 
-	public static List<Furniture> getFurnitureForUser() {
-		return cursorToFurnitureList(FURNITURE_FOR_USER);
-	}
-	
-	private static List<Furniture> cursorToFurnitureList(Cursor c) {
-		List<Furniture> data = new ArrayList<Furniture>();
-		if (c != null) {
-			c.moveToFirst();
-		}
-		while (!c.isAfterLast()) {
-			data.add(Furniture.createFurnitureFromCursor(c));
-			c.moveToNext();
-		}
-
-		return data;
-	}
-	
-	private static List<Drawer> cursorToDrawerList(Cursor c) {
-		List<Drawer> data = new ArrayList<>();
-		if (c != null) {
-			c.moveToFirst();
-		}
-		while (!c.isAfterLast()) {
-			data.add(Drawer.createDrawerFromCursor(c));
-			c.moveToNext();
-		}
-
-		return data;
-	}
-
 	public static Furniture getFurniture(long furnitureId) {
 		refreshFurnitureCount();
-		Cursor furnitureCursor = db.getFurnitureById(furnitureId);
-		if (furnitureCursor != null) {
-			furnitureCursor.moveToFirst();
-		}
-		Furniture furniture = Furniture.createFurnitureFromCursor(furnitureCursor);
+		Cursor c = furnitureDao.getFurnitureById(furnitureId);
+		Furniture furniture = furnitureDao.toFurniture(c);
 		
-		Cursor drawersCursor = db.getDrawersByFurniture(furnitureId);
-		List<Drawer> drawers = cursorToDrawerList(drawersCursor);
-		furniture.setDrawers(drawers);
+		Cursor drawersCursor = drawerDao.getDrawersByFurniture(furnitureId);
+		List<Drawer> drawers = drawerDao.toDrawerList(drawersCursor);
+		furniture.setItems(drawers);
+		
 		return furniture;
+	}
+	
+	public static int getFurnitureCount() {
+		return furnitureCount;
 	}
 }

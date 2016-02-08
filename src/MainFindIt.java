@@ -1,7 +1,7 @@
 import com.findit.android.data.Category;
 import com.findit.android.data.Drawer;
 import com.findit.android.data.Furniture;
-import com.findit.android.data.Item;
+import com.findit.android.data.abstraction.Item;
 
 
 

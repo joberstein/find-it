@@ -38,7 +38,7 @@
             android:name="com.findit.android.activity.profile.SignUp"
             android:label="@string/title_activity_sign_up" />
         <activity
-            android:name="com.findit.android.dao.AndroidDatabaseManager"
+            android:name="com.findit.android.db.AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light" />
         <activity
    			android:name="com.findit.android.activity.ViewFurniture"

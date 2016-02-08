@@ -1,18 +1,13 @@
 package com.findit.android.activity;
 
-import java.util.List;
-
 import com.findit.android.R;
-import com.findit.android.dao.FindItContract.FurnitureTable;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TableLayout;
 
 public class SetFurnitureProperties extends Activity {
 

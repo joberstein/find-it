@@ -2,9 +2,7 @@ package com.findit.android.listener;
 
 import com.findit.android.utils.TableCreator;
 
-import android.annotation.SuppressLint;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;

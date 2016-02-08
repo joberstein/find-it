@@ -1,5 +1,11 @@
 package com.findit.android.activity.profile;
 
+import com.findit.android.R;
+import com.findit.android.activity.ViewFurniture;
+import com.findit.android.data.User;
+import com.findit.android.db.dao.UserDao;
+import com.findit.android.db.dao.UserDaoImpl;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -11,23 +17,18 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.findit.android.activity.ViewFurniture;
-import com.findit.android.dao.FindItDbHelper;
-import com.findit.android.dao.FindItContract.UserTable;
-import com.findit.android.R;
-
 public class Login extends Activity {
 	public static final String PREFS_NAME = "MyPrefsFile";
 	public static final String USER_ID = "userId";
 	
-	FindItDbHelper db;
+	UserDao userDao;
 	SharedPreferences preferences;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.login);
-		db = FindItDbHelper.getInstance(this);
+		userDao = UserDaoImpl.getInstance(this);
 		preferences = getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
 		
 		loginReturningUser();
@@ -46,7 +47,7 @@ public class Login extends Activity {
 	}
 	
 	private boolean isUserAlreadyLoggedIn(long userId) {
-		return (userId != -1) && (db.getUser(userId).getCount() == 1);
+		return (userId != -1) && (userDao.getUser(userId).getCount() == 1);
 	}
 
 	public void validateLogin(View view) {
@@ -54,21 +55,14 @@ public class Login extends Activity {
 		EditText passwordInput = (EditText) findViewById(R.id.passwordText);
 		String username = usernameInput.getText().toString();
 		String password = passwordInput.getText().toString();
-
-		Cursor matchingUsers = db.getUserByUsername(username);
-		if (matchingUsers != null) {
-			matchingUsers.moveToFirst();
-		}
-
-		while (!matchingUsers.isAfterLast()) {
-			String passwordValue = matchingUsers.getString(matchingUsers.getColumnIndex(UserTable.COLUMN_NAME_PASSWORD));
-			if (password.equals(passwordValue)) {
-				long idValue = matchingUsers.getLong(matchingUsers.getColumnIndex(UserTable._ID));
-				rememberUserId(idValue);
-				forwardToViewFurniture();
-				return;
-			}
-			matchingUsers.moveToNext();
+		
+		Cursor usersCursor = userDao.getUserByUsername(username);
+		User matchingUser = userDao.toUser(usersCursor);
+		
+		if (matchingUser != null && password.equals(matchingUser.getPassword())) {
+			rememberUserId(matchingUser.getId());
+			forwardToViewFurniture();
+			return;
 		}
 
 		Toast toast = Toast.makeText(getApplicationContext(), "Login failed", Toast.LENGTH_SHORT);

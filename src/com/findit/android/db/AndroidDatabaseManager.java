@@ -1,4 +1,4 @@
-package com.findit.android.dao;
+package com.findit.android.db;
 
 
 //all required import files
